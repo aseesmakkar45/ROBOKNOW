@@ -8,6 +8,54 @@ const phase4Content = {
     phaseNumber: 4,
     description: 'Go deep into microcontrollers, real-time operating systems, communication protocols, and the full software/hardware stack that brings robots to life.',
     sections: [
+        // ========== 4.0 PCM TO EMBEDDED BRIDGE (BEGINNER-FRIENDLY) ==========
+        {
+            id: 'pcm-bridge-4',
+            title: '4.0 PCM to Embedded Bridge',
+            topics: [
+                {
+                    id: 'pcm-embedded-concepts',
+                    title: 'How a Computer Thinks (Logic & Math)',
+                    content: `
+<h3>How a Microcontroller Thinks</h3>
+<p>If you've studied **Logic Gates (AND, OR, NOT, NAND)** in CBSE Class 12 Physics (Semiconductors chapter), you already understand the absolute core of computer architecture. Let's trace how we go from school-level physics to programming microcontrollers.</p>
+
+<div class="info-card success">
+<h4>🧠 Relately School Logic to Microcontrollers</h4>
+<ul>
+    <li><strong>Silicon & Doping (Class 12 Semiconductors)</strong>: You learned how adding impurities to silicon creates P-type and N-type materials, which form P-N junctions and transistors. A microcontroller is simply **millions of microscopic silicon transistors** acting as high-speed switches!</li>
+    <li><strong>Boolean Algebra & Logic Gates</strong>: Every decision your robot makes inside the code is physically computed using logic gate circuits. For example, if your code says:
+        <br><code>if (sensorBlocked && batteryHealthy) { driveForward(); }</code>
+        <br>It is passing two voltages (representing 1s and 0s) through an actual **AND Gate** inside the CPU!</li>
+    <li><strong>Registers are just memory slots</strong>: In school, you studied D-flip-flops or basic latch circuits that can store a 1 or a 0. In an embedded chip, we group 8, 16, or 32 of these storage slots together and call it a **Register**. Writing to a register is just using electronic switches to set configuration!</li>
+</ul>
+</div>
+`
+                },
+                {
+                    id: 'pcm-embedded-jargon',
+                    title: 'Embedded Jargon Buster',
+                    content: `
+<h3>Embedded Jargon Buster</h3>
+<p>Firmware programming has its own vocabulary. Here are easy-to-understand explanations and analogies:</p>
+
+<table class="data-table">
+<thead><tr><th>Embedded Term</th><th>What it Sounds Like</th><th>High School / Real Life Analogy</th></tr></thead>
+<tbody>
+<tr><td><strong>Bare-Metal</strong></td><td>Metal chassis</td><td>Programming a microcontroller directly in C/C++ without any operating system (like Windows or Linux) running underneath. You are talking directly to the raw silicon.</td></tr>
+<tr><td><strong>Register</strong></td><td>Cash register</td><td>A tiny, ultra-fast 8-bit or 32-bit "mailbox" inside the CPU hardware. Writing a number (like <code>0x01</code>) to a specific register address physically flips electronic switches that activate timers, pins, or communication channels.</td></tr>
+<tr><td><strong>Polling</strong></td><td>Voting</td><td>Constantly checking the status of a pin in a tight loop: <em>"Is the button pressed? Is it pressed? How about now?"</em> This wastes 100% of your CPU's processing power.</td></tr>
+<tr><td><strong>Interrupt (ISR)</strong></td><td>Rudely interrupting</td><td><strong>The Doorbell Analogy</strong>: Instead of polling (sitting by the door and asking if someone is there), you study peacefully (main loop). When a visitor arrives, the doorbell rings (interrupt). You pause your work, open the door (Interrupt Service Routine), and then return to exactly where you left off.</td></tr>
+<tr><td><strong>DMA (Direct Memory Access)</strong></td><td>Admin permissions</td><td><strong>The Delivery Agent Analogy</strong>: If a massive shipment of boxes (sensor data) arrives, the CPU doesn't carry them one by one. The CPU tells the DMA controller: <em>"Move these 1000 boxes directly from the UART port to the RAM buffer."</em> The CPU goes to sleep or does math, and the DMA handles the heavy lifting in hardware.</td></tr>
+<tr><td><strong>Baud Rate</strong></td><td>Speed of sounds</td><td>The speed at which data is transmitted over serial lines, measured in bits per second (bps). E.g., <code>9600 baud</code> means 9,600 electrical pulses (bits) are sent per second. Both sender and receiver must agree on this speed to decode the pulses.</td></tr>
+<tr><td><strong>Watchdog Timer (WDT)</strong></td><td>Guard dog</td><td><strong>The Dead Man's Switch Analogy</strong>: A hardware safety timer. If the main loop hangs or enters an infinite loop, it fails to reset (or "kick") the watchdog. The watchdog timer runs out and physically cuts the power line for a microsecond to hard-reset the microcontroller.</td></tr>
+<tr><td><strong>RTOS (Real-Time OS)</strong></td><td>Fast operating system</td><td>A lightweight operating system for microcontrollers that slices CPU time into precise slices. Unlike Windows (where a mouse lag is fine), an RTOS guarantees that time-critical tasks (like balancing a drone) are executed within exact microsecond deadlines.</td></tr>
+</tbody>
+</table>
+`
+                }
+            ]
+        },
         // ========== 4.1 EMBEDDED FUNDAMENTALS ==========
         {
             id: 'embedded-fundamentals',

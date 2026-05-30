@@ -8,6 +8,52 @@ const phase3Content = {
     phaseNumber: 3,
     description: 'Master the fundamentals of electricity, electronic components, power electronics, and battery technology — the lifeblood of every robotic system.',
     sections: [
+        // ========== 3.0 PCM TO ELECTRICAL BRIDGE (BEGINNER-FRIENDLY) ==========
+        {
+            id: 'pcm-bridge-3',
+            title: '3.0 PCM to Electrical Bridge',
+            topics: [
+                {
+                    id: 'pcm-electrical-concepts',
+                    title: 'Connecting School Physics to Circuits',
+                    content: `
+<h3>Connecting School Physics to Robotics Circuits</h3>
+<p>Welcome, future Roboticist! If you have studied Class 11 & 12 Physics (CBSE/State Boards), you already know 80% of the core physics behind electrical engineering. Let's bridge the gap between textbook formulas and physical robots.</p>
+
+<div class="info-card success">
+<h4>🎓 From Formulas to Wires: The PCM Connection</h4>
+<ul>
+    <li><strong>Electrostatics (Class 12, Ch 1)</strong>: In school, you learned that electric potential $V = W/q$ (work done per unit charge) and that charges flow from high potential to low potential. In robotics, <strong>Voltage (V)</strong> is simply this "potential difference" that pushes electrons through your robot's wires!</li>
+    <li><strong>Reference Point (Ground)</strong>: In electrostatics, we assume potential is zero at infinity ($V_\infty = 0$). In a robot, "infinity" is too far! Instead, we pick the negative terminal of the battery as our arbitrary reference point and call it <strong>Ground (GND, 0V)</strong>. Every other voltage (3.3V, 5V, 12V) is measured relative to this Ground.</li>
+    <li><strong>Drift Velocity & Current (Class 12, Ch 3)</strong>: You learned that current $I = nA e v_d$. In a copper wire, electrons drift slowly, but the electrical signal travels near the speed of light. If a motor draws high current, you need a larger cross-sectional area $A$ (thicker wire) to prevent collision-induced heating ($H = I^2 R t$).</li>
+    <li><strong>Self-Induction & Flyback Spikes (Class 12, Ch 6)</strong>: You studied electromagnetic induction, where a changing current induces a back-EMF: $e = -L \frac{dI}{dt}$. When you suddenly cut power to a spinning DC motor (an inductor $L$), $\frac{dI}{dt}$ becomes huge, creating a massive voltage spike ($e$) that can fry your microcontroller! This is why we use <strong>flyback diodes</strong> — they act as one-way bypass valves to safely discharge this induced current.</li>
+    <li><strong>Capacitive Reactance (Class 12, Ch 7)</strong>: You learned that a capacitor's reactance is $X_C = \frac{1}{\omega C}$. At DC ($\omega = 0$), $X_C = \infty$ (it blocks DC). At high-frequency AC noise ($\omega \to \infty$), $X_C \to 0$ (it acts as a short circuit). In robotics, we use this physics by placing **Decoupling Capacitors** near chip power pins to shunt high-frequency electrical noise straight to Ground, keeping our DC power clean!</li>
+</ul>
+</div>
+`
+                },
+                {
+                    id: 'pcm-electrical-jargon',
+                    title: 'Electrical Jargon Buster',
+                    content: `
+<h3>Electrical Jargon Buster</h3>
+<p>Electrical engineers use special terms that can sound confusing. Let's break them down using familiar concepts:</p>
+
+<table class="data-table">
+<thead><tr><th>Robotics Term</th><th>What it Sounds Like</th><th>What it Actually Means (High School Analogy)</th></tr></thead>
+<tbody>
+<tr><td><strong>Logic Level</strong></td><td>Smart voltage</td><td>The voltage used to represent binary <code>1</code> (HIGH) and <code>0</code> (LOW). For Arduino, 5V = HIGH, 0V = LOW. For STM32/ESP32, 3.3V = HIGH, 0V = LOW.</td></tr>
+<tr><td><strong>Floating Pin</strong></td><td>Hovering wire</td><td>An input pin that is not connected to either VCC or GND. Just like an electrostatic leaf electroscope, it picks up static charge and random environmental noise, giving erratic binary readings.</td></tr>
+<tr><td><strong>Pull-up / Pull-down</strong></td><td>Tugging a rope</td><td>A high-value resistor (usually 10kΩ) used to connect a floating pin to VCC (pull-up) or GND (pull-down). This gently "tugs" the default state of the pin to a stable 1 or 0 until a button press forces it otherwise.</td></tr>
+<tr><td><strong>Stall Current</strong></td><td>Stop current</td><td>The maximum current drawn by a motor when its shaft is physically locked and prevented from rotating. Since speed is zero, back-EMF is zero, and the motor acts as a simple low-resistance wire (Ohm's Law: $I_{stall} = V/R_{winding}$).</td></tr>
+<tr><td><strong>Decoupling / Bypass</strong></td><td>Unlinking power</td><td>Placing a small capacitor near an IC's power pins to act as a local "reservoir" of charge. When the IC suddenly draws current, the cap supplies it instantly, preventing a voltage dip on the main power rail.</td></tr>
+<tr><td><strong>Impedance ($Z$)</strong></td><td>Complicated resistance</td><td>The total opposition to AC current flow, combining normal resistance ($R$) and frequency-dependent reactance ($X_L, X_C$). Measured in Ohms, it is just Ohm's Law generalized: $V = I \times Z$.</td></tr>
+</tbody>
+</table>
+`
+                }
+            ]
+        },
         // ========== 3.1 ELECTRICITY ==========
         {
             id: 'electricity',

@@ -8,6 +8,55 @@ const phase5Content = {
     phaseNumber: 5,
     description: 'Master every sensor category used in robotics — from IMUs and encoders to LiDAR, cameras, and force-torque sensors. Learn how they work, how to interface them, and how to process their data.',
     sections: [
+        // ========== 5.0 PCM TO SENSORS BRIDGE (BEGINNER-FRIENDLY) ==========
+        {
+            id: 'pcm-bridge-5',
+            title: '5.0 PCM to Sensors Bridge',
+            topics: [
+                {
+                    id: 'pcm-sensor-concepts',
+                    title: 'The Physics of Measurement',
+                    content: `
+<h3>The Physics of Measurement</h3>
+<p>Robots need to perceive the world around them. To do this, they convert physical phenomena (forces, magnetic fields, light, sound) into digital numbers. If you studied Class 11 Mechanics and Class 12 Magnetism, the physics of sensors will feel incredibly intuitive!</p>
+
+<div class="info-card success">
+<h4>📡 Connecting School Physics to Robot Sensors</h4>
+<ul>
+    <li><strong>MEMS Accelerometers (Class 11 Hooke's Law + Class 12 Capacitance)</strong>: 
+        You learned Hooke's Law ($F = -kx$) and parallel plate capacitance ($C = \frac{\varepsilon A}{d}$). Inside a silicon chip, an accelerometer has a microscopic mass suspended by a silicon spring. When the robot moves, the mass shifts by a distance $x$ ($F = ma = kx$). This shift changes the spacing $d$ of capacitive plates on the chip, changing the capacitance $C$. The chip measures this capacitance change to calculate the acceleration!</li>
+    <li><strong>Wheel Encoders (Class 12 Magnetism & Lorentz Force)</strong>: 
+        You learned that a charge moving through a magnetic field experiences a force: $\vec{F} = q(\vec{v} \times \vec{B})$, creating a transverse Hall voltage. In a robot's wheels, magnetic encoders have tiny Hall Effect sensors. As the wheel spins, magnet poles pass the sensor, triggering voltage pulses. Counting these pulses is how the robot calculates its wheel velocity and distance traveled!</li>
+    <li><strong>Ranging (Class 11 Wave Velocity)</strong>: 
+        You learned that speed = distance / time. Ultrasonic, ToF, and LiDAR sensors use this exact formula! They emit a pulse (sound or light), wait for the echo, and calculate: 
+        <br><strong style="font-family:var(--font-mono);font-size:16px;">Distance = (Speed × Time) / 2</strong>
+        <br>(Divided by 2 because the wave travels to the obstacle and back!).</li>
+</ul>
+</div>
+`
+                },
+                {
+                    id: 'pcm-sensor-jargon',
+                    title: 'Sensors Jargon Buster',
+                    content: `
+<h3>Sensors Jargon Buster</h3>
+<p>Let's demystify common sensor terminology using everyday analogies:</p>
+
+<table class="data-table">
+<thead><tr><th>Sensor Term</th><th>What it Sounds Like</th><th>High School / Real Life Analogy</th></tr></thead>
+<tbody>
+<tr><td><strong>MEMS</strong></td><td>Member of a system</td><td><strong>Micro-Electro-Mechanical Systems</strong>. Tiny mechanical devices (like springs, gears, and vibrating beams) etched directly onto silicon chips alongside microcircuitry. They are the microscopic parts inside IMUs and pressure sensors.</td></tr>
+<tr><td><strong>Drift</strong></td><td>Floating away</td><td><strong>The Accumulating Error Analogy</strong>: If you close your eyes and take steps, estimating your position by counting them, a tiny error of 5cm per step will accumulate. After 100 steps, you could be 5 meters away from where you think you are. That is gyroscope drift!</td></tr>
+<tr><td><strong>Calibration</strong></td><td>Correction</td><td>Adjusting your sensor outputs to remove constant offsets. Just like turning the zero-adjust screw on a physical spring balance so it reads exactly <code>0.0g</code> when empty.</td></tr>
+<tr><td><strong>Sensor Fusion</strong></td><td>Melting sensors</td><td><strong>The Balance Analogy</strong>: Human balance uses "sensor fusion." Your inner ear (gyroscope) reacts fast to sudden trips, but your eyes (cameras/GPS) keep you oriented long-term. In robotics, we merge accelerometer and gyroscope data to get highly stable angle readings.</td></tr>
+<tr><td><strong>Time-of-Flight (ToF)</strong></td><td>Flight tickets</td><td>Measuring distance by timing how long it takes for a laser pulse (moving at the speed of light, $c \approx 3 \times 10^8\text{m/s}$) to bounce off a surface and return to the chip.</td></tr>
+<tr><td><strong>IMU (Inertial Unit)</strong></td><td>Inner machine</td><td>A single chip containing a 3-axis accelerometer and a 3-axis gyroscope. It acts as the robot's "inner ear," detecting gravity, tilt, and rotational speed.</td></tr>
+</tbody>
+</table>
+`
+                }
+            ]
+        },
         // ========== 5.1 MOTION SENSORS ==========
         {
             id: 'motion-sensors',
