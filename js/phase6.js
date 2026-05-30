@@ -1,0 +1,864 @@
+// ============================================================
+// PHASE 6 — ACTUATORS & MOTORS (Complete Content)
+// ============================================================
+const phase6Content = {
+    id: 'phase6',
+    title: 'Actuators & Motors',
+    icon: '⚙️',
+    phaseNumber: 6,
+    description: 'Master every type of motor and actuator used in robotics — from basic brushed DC motors to advanced BLDC Field-Oriented Control, harmonic drives, and ball screws. Learn the physics, math, drivers, and firmware.',
+    sections: [
+        // ========== 6.1 MOTORS ==========
+        {
+            id: 'motors',
+            title: '6.1 Motors',
+            topics: [
+                {
+                    id: 'brushed-dc',
+                    title: 'Brushed DC Motors',
+                    content: `
+<h3>Brushed DC Motors</h3>
+<p>The brushed DC motor is the simplest and oldest electric motor. It converts electrical energy to mechanical rotation using an electromagnetic interaction between a rotating <strong>armature</strong> (rotor) and a stationary <strong>field</strong> (stator, either permanent magnets or field coils). Mechanical brushes and a commutator switch the current direction in the armature coils to maintain continuous rotation.</p>
+
+<h4>How a Brushed DC Motor Works</h4>
+<ol class="steps">
+<li class="step"><h4>Magnetic Field Creation</h4><p>Permanent magnets (or field coils) create a fixed magnetic field in the stator.</p></li>
+<li class="step"><h4>Current Through Armature</h4><p>DC current flows through the armature coils via the brushes and commutator, creating an electromagnetic field.</p></li>
+<li class="step"><h4>Lorentz Force</h4><p>F = IL × B — the force on a current-carrying conductor in a magnetic field causes the armature to rotate.</p></li>
+<li class="step"><h4>Commutation</h4><p>As the armature rotates, the commutator mechanically switches the current direction in each coil at the right moment to maintain continuous rotation in one direction.</p></li>
+</ol>
+
+<div class="diagram-container">
+<div class="diagram-title">Brushed DC Motor — Torque-Speed Curve</div>
+<svg viewBox="0 0 500 280" width="500" height="280">
+    <!-- Axes -->
+    <line x1="60" y1="240" x2="440" y2="240" stroke="#6b7280" stroke-width="1.5"/>
+    <line x1="60" y1="20"  x2="60"  y2="240" stroke="#6b7280" stroke-width="1.5"/>
+    <!-- Torque line (linear, high intercept) -->
+    <line x1="60" y1="40" x2="420" y2="230" stroke="#ef4444" stroke-width="2.5"/>
+    <!-- Speed (inverse of torque, linear) drawn as separate axis -->
+    <!-- Efficiency curve (parabola peaking in middle) -->
+    <path d="M60,230 Q140,80 240,50 Q340,80 420,230" stroke="#10b981" stroke-width="2" fill="none" stroke-dasharray="5,3"/>
+    <!-- Power curve (parabola) -->
+    <path d="M60,230 Q240,40 420,230" stroke="#6C63FF" stroke-width="2" fill="none"/>
+    <!-- Labels -->
+    <text x="430" y="235" fill="#ef4444" font-size="12">Torque</text>
+    <text x="430" y="220" fill="#6C63FF" font-size="12">Power</text>
+    <text x="430" y="205" fill="#10b981" font-size="12">Efficiency</text>
+    <!-- Axis labels -->
+    <text x="240" y="260" fill="#9ca3af" font-size="13" text-anchor="middle">Speed (RPM) →</text>
+    <text x="20" y="140" fill="#9ca3af" font-size="13" text-anchor="middle" transform="rotate(-90, 20, 140)">Torque / Power →</text>
+    <!-- Key points -->
+    <circle cx="60" cy="40" r="4" fill="#ef4444"/>
+    <text x="70" y="40" fill="#ef4444" font-size="11">Stall Torque</text>
+    <circle cx="420" cy="230" r="4" fill="#f59e0b"/>
+    <text x="360" y="255" fill="#f59e0b" font-size="11">No-Load Speed</text>
+    <circle cx="240" cy="50" r="4" fill="#10b981"/>
+    <text x="250" y="45" fill="#10b981" font-size="11">Max Efficiency</text>
+    <!-- Operating region -->
+    <rect x="160" y="100" width="160" height="120" fill="rgba(16,185,129,0.08)" stroke="#10b981" stroke-width="1" stroke-dasharray="4,2"/>
+    <text x="240" y="170" fill="#34d399" font-size="11" text-anchor="middle">Optimal</text>
+    <text x="240" y="185" fill="#34d399" font-size="11" text-anchor="middle">Operating</text>
+    <text x="240" y="200" fill="#34d399" font-size="11" text-anchor="middle">Region</text>
+</svg>
+</div>
+
+<h4>Key Motor Parameters</h4>
+<table class="data-table">
+<thead><tr><th>Parameter</th><th>Symbol</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><strong>Stall Torque</strong></td><td>T_stall</td><td>Maximum torque at zero speed. Motor draws maximum current here.</td></tr>
+<tr><td><strong>No-Load Speed</strong></td><td>ω_0</td><td>Speed at zero torque (no load). Motor draws minimum current here.</td></tr>
+<tr><td><strong>Stall Current</strong></td><td>I_stall</td><td>Maximum current at stall = V_supply / R_winding. Can damage motor/driver if sustained.</td></tr>
+<tr><td><strong>Motor Constant</strong></td><td>K_t</td><td>Torque per unit current: T = K_t × I (Nm/A)</td></tr>
+<tr><td><strong>Back-EMF Constant</strong></td><td>K_e</td><td>Voltage generated per unit speed: V_back = K_e × ω (V/rpm or V·s/rad)</td></tr>
+<tr><td><strong>Gear Ratio</strong></td><td>N:1</td><td>Multiplies torque by N, divides speed by N</td></tr>
+</tbody>
+</table>
+
+<div class="info-card highlight">
+<h4>💡 K_t and K_e Are Related</h4>
+<p>In SI units, the torque constant K_t (Nm/A) and back-EMF constant K_e (V·s/rad) are numerically equal for an ideal motor: <strong>K_t = K_e</strong>. This elegant relationship comes from energy conservation: electrical power in (V×I) = mechanical power out (T×ω) + losses.</p>
+</div>
+
+<h4>Advantages and Disadvantages</h4>
+<div class="two-col">
+<div class="info-card success">
+<h4>✅ Advantages</h4>
+<ul>
+<li>Simple to control (just apply voltage or PWM)</li>
+<li>Low cost</li>
+<li>High starting torque</li>
+<li>Works at very low voltages (1.5V–48V)</li>
+<li>Bidirectional with H-bridge</li>
+</ul>
+</div>
+<div class="info-card warning">
+<h4>⚠️ Disadvantages</h4>
+<ul>
+<li>Brushes wear out (lifetime: 500–2000 hours)</li>
+<li>Brush sparking causes EMI</li>
+<li>Lower efficiency than BLDC</li>
+<li>Cannot run at very high speeds</li>
+<li>Maintenance required</li>
+</ul>
+</div>
+</div>
+`
+                },
+                {
+                    id: 'bldc-motors',
+                    title: 'BLDC Motors',
+                    content: `
+<h3>BLDC Motors (Brushless DC)</h3>
+<p>BLDC motors move the windings to the stator and the permanent magnets to the rotor — eliminating brushes entirely. The commutation that brushes did mechanically is now done <strong>electronically</strong> by the controller (ESC). The result: higher efficiency, higher power density, longer life, lower noise, and higher speeds than brushed motors.</p>
+
+<h4>BLDC vs Brushed Comparison</h4>
+<table class="data-table">
+<thead><tr><th>Feature</th><th>Brushed DC</th><th>BLDC</th></tr></thead>
+<tbody>
+<tr><td>Commutation</td><td>Mechanical (brushes)</td><td>Electronic (ESC/controller)</td></tr>
+<tr><td>Efficiency</td><td>70–80%</td><td>85–95%</td></tr>
+<tr><td>Power density</td><td>Medium</td><td>High (3–4× for same volume)</td></tr>
+<tr><td>Max speed</td><td>~10,000 RPM</td><td>~100,000 RPM (outrunner: ~5000 RPM)</td></tr>
+<tr><td>Lifetime</td><td>500–2000 hours</td><td>10,000+ hours (bearing limited)</td></tr>
+<tr><td>Control complexity</td><td>Simple (H-bridge)</td><td>Complex (6-step or FOC)</td></tr>
+<tr><td>Cost</td><td>Low</td><td>Medium–High</td></tr>
+<tr><td>EMI</td><td>High (brush sparking)</td><td>Low</td></tr>
+</tbody>
+</table>
+
+<h4>Inrunner vs Outrunner BLDC</h4>
+<div class="two-col">
+<div class="info-card">
+<h4>Inrunner</h4>
+<p>Rotor (magnets) inside stator (windings). High RPM, low torque. Typically requires gearbox. Used in high-speed applications: EDF fans, high-performance servo motors.</p>
+</div>
+<div class="info-card">
+<h4>Outrunner</h4>
+<p>Rotor (magnets) outside, spinning around inner stator. More poles → lower RPM, higher torque. Used in multirotor drones (direct-drive propellers), wheels (hub motors). kV = RPM per Volt.</p>
+</div>
+</div>
+
+<h4>BLDC Motor kV Rating</h4>
+<div class="formula-block">
+<div class="formula-label">BLDC kV Rating (for drones/RC)</div>
+<div class="formula">No-Load RPM = kV × Battery Voltage</div>
+<div class="formula-description">Example: 2300kV motor on 3S LiPo (11.1V) → ~25,500 RPM no-load. Lower kV = more torque, higher kV = more speed.</div>
+</div>
+
+<h4>BLDC Motor Selection for Drones</h4>
+<table class="data-table">
+<thead><tr><th>Drone Size</th><th>Motor Size</th><th>kV Range</th><th>Propeller</th></tr></thead>
+<tbody>
+<tr><td>Tiny whoop (75mm)</td><td>0802–1102</td><td>15000–19000kV</td><td>2–3 inch</td></tr>
+<tr><td>3 inch toothpick</td><td>1404–1507</td><td>3500–4500kV</td><td>3 inch</td></tr>
+<tr><td>5 inch freestyle</td><td>2207–2306</td><td>1700–2600kV</td><td>5 inch</td></tr>
+<tr><td>7 inch long-range</td><td>2507–2806</td><td>1300–1900kV</td><td>7 inch</td></tr>
+<tr><td>Large octocopter</td><td>4010–4114</td><td>300–600kV</td><td>15–18 inch</td></tr>
+</tbody>
+</table>
+`
+                },
+                {
+                    id: 'stepper-motors',
+                    title: 'Stepper Motors',
+                    content: `
+<h3>Stepper Motors</h3>
+<p>A stepper motor divides a full rotation into a large number of equal steps. By precisely controlling which coils are energized in sequence, you can move the motor exactly one step at a time — <strong>open-loop position control without an encoder</strong>. This makes steppers ideal for CNC machines, 3D printers, camera sliders, and precise positioning applications.</p>
+
+<h4>How Stepper Motors Work</h4>
+<p>The most common type is the <strong>hybrid stepper</strong> (bipolar). It has 2 coils (phases). Energizing them in sequence (4 steps per electrical cycle × N rotor teeth = total steps/revolution) creates a rotating magnetic field that the toothed rotor follows. Standard is <strong>200 steps/revolution (1.8°/step)</strong>. With microstepping: 1600, 3200, 6400 steps/rev are common.</p>
+
+<h4>Step Modes</h4>
+<table class="data-table">
+<thead><tr><th>Mode</th><th>Steps/Rev</th><th>Torque</th><th>Smoothness</th><th>Noise</th></tr></thead>
+<tbody>
+<tr><td><strong>Full Step</strong></td><td>200</td><td>100%</td><td>Rough</td><td>High</td></tr>
+<tr><td><strong>Half Step</strong></td><td>400</td><td>70%</td><td>Better</td><td>Medium</td></tr>
+<tr><td><strong>1/8 Microstep</strong></td><td>1600</td><td>30–50%</td><td>Smooth</td><td>Low</td></tr>
+<tr><td><strong>1/16 Microstep</strong></td><td>3200</td><td>20–35%</td><td>Very Smooth</td><td>Very Low</td></tr>
+<tr><td><strong>1/32 Microstep</strong></td><td>6400</td><td>15–25%</td><td>Near-silent</td><td>Minimal</td></tr>
+</tbody>
+</table>
+
+<div class="info-card warning">
+<h4>⚠️ Stepper Motor Pitfalls</h4>
+<p><strong>Missing steps:</strong> If load torque exceeds available holding torque, the motor skips steps and position tracking is lost — with no feedback to detect this. Add sufficient margin (~2–3× expected load).</p>
+<p><strong>Resonance:</strong> At certain speeds, stepper motors resonate mechanically, causing vibration and missed steps. Microstepping and tuning motor current helps.</p>
+<p><strong>Heating:</strong> Steppers draw full holding current even when stationary. Use current reduction when idle to prevent overheating.</p>
+</div>
+
+<h4>Common Stepper Driver ICs</h4>
+<table class="data-table">
+<thead><tr><th>Driver</th><th>Max Current</th><th>Microstepping</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td><strong>A4988</strong></td><td>2A</td><td>1/16</td><td>Classic, cheap. Needs tuning with potentiometer (Vref).</td></tr>
+<tr><td><strong>DRV8825</strong></td><td>2.5A</td><td>1/32</td><td>Better than A4988, higher current, lower noise.</td></tr>
+<tr><td><strong>TMC2209</strong></td><td>2.8A</td><td>1/256</td><td>StealthChop (ultra-quiet), SpreadCycle (high torque). UART control. Used in 3D printers.</td></tr>
+<tr><td><strong>TMC5160</strong></td><td>4.4A</td><td>1/256</td><td>High-power, SPI, closed-loop capable. Industrial grade.</td></tr>
+</tbody>
+</table>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">Arduino — A4988 Stepper Control</span><button class="code-copy">Copy</button></div>
+<pre><code>// NEMA17 stepper with A4988 driver
+// STEP pin: one pulse = one microstep
+// DIR pin: direction
+// MS1,MS2,MS3: microstepping configuration
+
+const int STEP_PIN = 3;
+const int DIR_PIN  = 4;
+const int EN_PIN   = 8;  // Active LOW
+
+void setup() {
+    pinMode(STEP_PIN, OUTPUT);
+    pinMode(DIR_PIN,  OUTPUT);
+    pinMode(EN_PIN,   OUTPUT);
+    digitalWrite(EN_PIN, LOW);  // Enable motor
+}
+
+void stepMotor(long steps, int speed_us) {
+    // speed_us = delay between steps in microseconds
+    // Lower = faster. Min ~200µs for reliable operation
+    digitalWrite(DIR_PIN, steps > 0 ? HIGH : LOW);
+    steps = abs(steps);
+    
+    for (long i = 0; i < steps; i++) {
+        digitalWrite(STEP_PIN, HIGH);
+        delayMicroseconds(speed_us);
+        digitalWrite(STEP_PIN, LOW);
+        delayMicroseconds(speed_us);
+    }
+}
+
+void loop() {
+    // Move 200 steps (1 revolution at 1/16 microstep = 1/16 rev)
+    stepMotor(3200, 500);   // Forward, 500µs/step = ~312 RPM
+    delay(1000);
+    stepMotor(-3200, 500);  // Reverse
+    delay(1000);
+}</code></pre>
+</div>
+`
+                },
+                {
+                    id: 'servo-motors',
+                    title: 'Servo Motors',
+                    content: `
+<h3>Servo Motors</h3>
+<p>A servo motor is a closed-loop system integrating a motor, gearbox, position sensor (encoder or potentiometer), and a feedback control circuit. It maintains precise position, velocity, or torque control. There are two main categories in robotics: <strong>RC servos</strong> (hobby, PWM-controlled) and <strong>industrial servo systems</strong> (high-performance, dedicated servo drives).</p>
+
+<h4>RC/Hobby Servos</h4>
+<p>RC servos use a potentiometer for position feedback and a simple proportional controller. Controlled by a 50Hz PWM signal with 1–2ms pulse width:</p>
+<table class="data-table">
+<thead><tr><th>Pulse Width</th><th>Position</th></tr></thead>
+<tbody>
+<tr><td>1.0 ms</td><td>−90° (fully left/CCW)</td></tr>
+<tr><td>1.5 ms</td><td>0° (center/neutral)</td></tr>
+<tr><td>2.0 ms</td><td>+90° (fully right/CW)</td></tr>
+</tbody>
+</table>
+
+<h4>Servo Types</h4>
+<div class="card-grid">
+<div class="info-card">
+<h4>Standard Servo</h4>
+<p>180° rotation, plastic gears. SG90: 1.8kg·cm @ 5V. MG996R: 13kg·cm @ 6V, metal gears. For lightweight robot arms and basic mechanisms.</p>
+</div>
+<div class="info-card">
+<h4>High-Torque Servo</h4>
+<p>DS3225: 25kg·cm @ 6V, steel gears, waterproof. Savox SB-2274SG: 27kg·cm. For heavy robot arm joints and steering in large robots.</p>
+</div>
+<div class="info-card">
+<h4>Continuous Rotation Servo</h4>
+<p>Modified for continuous 360° rotation. Speed controlled by pulse width (center = stop, 1ms = full speed one way, 2ms = other way). Used as cheap gear-reduced drive motors.</p>
+</div>
+<div class="info-card">
+<h4>Digital Servo</h4>
+<p>Microprocessor-controlled, faster update rate (300Hz vs 50Hz), better holding torque, programmable. More expensive but significantly better performance for precise robots.</p>
+</div>
+</div>
+
+<h4>Smart Servos — Dynamixel</h4>
+<p>Dynamixel servos (Robotis) are professional-grade "smart" servos with a digital serial interface (TTL or RS-485), built-in position/temperature/load sensors, and configurable control modes (position, velocity, current/torque). They are the standard for humanoid robots and research platforms.</p>
+
+<table class="data-table">
+<thead><tr><th>Model</th><th>Protocol</th><th>Torque</th><th>Control Modes</th><th>Use</th></tr></thead>
+<tbody>
+<tr><td>XL330-M288</td><td>TTL</td><td>0.52 Nm</td><td>Position, Velocity, PWM</td><td>Small arms, educational</td></tr>
+<tr><td>XL430-W250</td><td>TTL</td><td>1.5 Nm</td><td>Position, Velocity, Current</td><td>Mid-range robots</td></tr>
+<tr><td>XM430-W350</td><td>TTL/RS-485</td><td>3.8 Nm</td><td>Position, Velocity, Current, Multi-turn</td><td>Research robots</td></tr>
+<tr><td>MX-106</td><td>RS-485</td><td>8.4 Nm</td><td>All modes + FOC</td><td>Heavy-duty arms</td></tr>
+</tbody>
+</table>
+`
+                },
+                {
+                    id: 'linear-actuators',
+                    title: 'Linear Actuators',
+                    content: `
+<h3>Linear Actuators</h3>
+<p>Linear actuators convert rotational motor motion into linear (straight-line) displacement. Used in robot legs (for stroke), grippers (for jaw opening), adjustable mounts, and any mechanism requiring push/pull motion.</p>
+
+<h4>Types of Linear Actuators</h4>
+<div class="card-grid">
+<div class="info-card">
+<h4>Electric Linear Actuator</h4>
+<p>DC motor + lead screw + sliding nut in a compact housing. Typical: 25–100mm stroke, 100–1000N force, 5–50mm/s speed. Used in robot legs, adjustable platforms. Control: H-bridge + limit switches.</p>
+</div>
+<div class="info-card">
+<h4>Ball Screw Actuator</h4>
+<p>High efficiency (90–98%) ball screw in a linear module. BLDC or stepper driven. Used in CNC machines, precision positioning stages, delta robot arms. Sub-millimeter precision.</p>
+</div>
+<div class="info-card">
+<h4>Pneumatic Actuator</h4>
+<p>Compressed air drives a piston. Very high force-to-weight ratio, fast actuation. Requires compressor and solenoid valves. Used in industrial grippers, high-speed pick-and-place.</p>
+</div>
+<div class="info-card">
+<h4>Hydraulic Actuator</h4>
+<p>Oil pressure drives very high force actuators. Used in heavy industrial robots, excavators, walking machines (BigDog). Complex, messy, requires pump and control valves.</p>
+</div>
+</div>
+`
+                }
+            ]
+        },
+        // ========== 6.2 MOTOR PHYSICS ==========
+        {
+            id: 'motor-physics',
+            title: '6.2 Motor Physics',
+            topics: [
+                {
+                    id: 'electromagnetic-torque',
+                    title: 'Electromagnetic Torque & Back-EMF',
+                    content: `
+<h3>Motor Physics — Electromagnetic Torque and Back-EMF</h3>
+<p>Every DC motor, whether brushed or BLDC, operates on the same fundamental physics. Understanding this allows you to predict motor behavior, select the right motor, and design motor controllers.</p>
+
+<h4>The Motor Electrical Equation</h4>
+<div class="formula-block">
+<div class="formula-label">Motor Circuit Equation</div>
+<div class="formula">V = I·R + L·(dI/dt) + K_e·ω</div>
+<div class="formula-description">V = supply voltage, I = current, R = winding resistance, L = inductance, K_e·ω = back-EMF</div>
+</div>
+
+<h4>Back-EMF</h4>
+<p>When a motor rotates, it acts as a generator — the spinning magnets induce a voltage in the windings that <strong>opposes the supply voltage</strong>. This is Back-EMF (BEMF).</p>
+<div class="formula-block">
+<div class="formula-label">Back-EMF</div>
+<div class="formula">V_BEMF = K_e × ω</div>
+<div class="formula-description">K_e = back-EMF constant. At no-load, BEMF ≈ V_supply (no current needed to sustain rotation). At stall, ω=0 so BEMF=0, and I = V/R (maximum current).</div>
+</div>
+
+<h4>Torque Generation</h4>
+<div class="formula-block">
+<div class="formula-label">Electromagnetic Torque</div>
+<div class="formula">T = K_t × I</div>
+<div class="formula-description">K_t = torque constant (Nm/A). More current → more torque. K_t = K_e in SI units.</div>
+</div>
+
+<h4>Motor Mechanical Equation</h4>
+<div class="formula-block">
+<div class="formula-label">Newton's 2nd Law for Rotation</div>
+<div class="formula">T_em − T_load − T_friction = J × (dω/dt)</div>
+<div class="formula-description">J = moment of inertia (kg·m²). This differential equation describes motor speed dynamics. The motor accelerates when T_em > T_load + T_friction.</div>
+</div>
+
+<h4>Efficiency</h4>
+<div class="formula-block">
+<div class="formula-label">Motor Efficiency</div>
+<div class="formula">η = P_mech / P_elec = (T × ω) / (V × I)</div>
+<div class="formula-description">Losses: I²R copper losses (resistive heating), iron losses (eddy currents, hysteresis), friction, windage. Brushed motors: 70-85%. BLDC: 85-97%.</div>
+</div>
+
+<h4>Torque-Speed Curve (Complete Analysis)</h4>
+<p>The linear torque-speed relationship (ideal DC motor) emerges directly from the motor equations:</p>
+<div class="formula-block">
+<div class="formula-label">Speed-Torque Relationship</div>
+<div class="formula">ω = (V/K_e) − (R/(K_e·K_t)) × T</div>
+<div class="formula-description">Linear relationship: speed decreases linearly with load torque. Slope = −R/(K_e·K_t)</div>
+</div>
+`
+                },
+                {
+                    id: 'motor-constants',
+                    title: 'Motor Constants & Selection',
+                    content: `
+<h3>Motor Constants and Selection</h3>
+<p>Selecting the right motor requires matching torque, speed, power, voltage, and current requirements to your application. Here's a systematic approach.</p>
+
+<h4>Step 1: Define Requirements</h4>
+<ul>
+<li><strong>Load torque (T_load)</strong> — Force × moment arm. For wheels: T = F × r_wheel. For lifting: T = m × g × r_pulley.</li>
+<li><strong>Required speed (ω)</strong> — Linear speed / radius for wheels. deg/s for joints.</li>
+<li><strong>Duty cycle</strong> — Continuous run or intermittent? Intermittent allows higher peak torque.</li>
+<li><strong>Available voltage</strong> — Determined by battery choice.</li>
+</ul>
+
+<h4>Step 2: Calculate Required Motor Torque</h4>
+<div class="formula-block">
+<div class="formula-label">Required Motor Torque (with safety margin)</div>
+<div class="formula">T_motor = (T_load / gear_ratio) × safety_factor</div>
+<div class="formula-description">Safety factor: 1.5–3×. Account for stiction (static friction at start), acceleration torque (J × α), and manufacturing variations.</div>
+</div>
+
+<h4>Step 3: Gear Ratio Selection</h4>
+<div class="formula-block">
+<div class="formula-label">Optimal Gear Ratio (for max acceleration)</div>
+<div class="formula">N_optimal = √(J_load / J_motor)</div>
+<div class="formula-description">This gear ratio reflects the load inertia to match the motor inertia — maximizes acceleration. For most robots, practical gear ratio: 10:1 to 100:1.</div>
+</div>
+
+<h4>Motor Sizing Example — Differential Drive Robot</h4>
+<div class="info-card highlight">
+<h4>📝 Worked Example</h4>
+<p><strong>Robot:</strong> 5kg, two 100mm wheels, max speed 1 m/s, incline capability 15°</p>
+<p><strong>Step 1 — Torque on incline:</strong> F = m×g×sin(15°) = 5×9.81×0.259 = 12.7N per wheel</p>
+<p><strong>Step 2 — Wheel torque:</strong> T_wheel = F × r = 12.7 × 0.05 = 0.635 Nm per wheel</p>
+<p><strong>Step 3 — Motor RPM at wheel:</strong> ω_wheel = v/r = 1/0.05 = 20 rad/s = 191 RPM</p>
+<p><strong>Step 4 — Choose gear ratio 30:1:</strong> Motor RPM = 191 × 30 = 5730 RPM ✓ (typical for DC motors)</p>
+<p><strong>Step 5 — Motor torque needed:</strong> T_motor = 0.635/30 = 0.021 Nm with 2× safety = <strong>0.042 Nm</strong></p>
+<p><strong>Step 6 — Motor current:</strong> With K_t = 0.03 Nm/A: I = T/K_t = 0.042/0.03 = <strong>1.4A per motor</strong></p>
+<p><strong>Result:</strong> Select a 12V motor with T_stall > 0.05 Nm, I_stall < 5A, no-load speed > 6000 RPM</p>
+</div>
+`
+                }
+            ]
+        },
+        // ========== 6.3 MOTOR DRIVERS ==========
+        {
+            id: 'motor-drivers',
+            title: '6.3 Motor Drivers',
+            topics: [
+                {
+                    id: 'h-bridges',
+                    title: 'H-Bridges',
+                    content: `
+<h3>H-Bridges</h3>
+<p>An H-bridge is a circuit of 4 switches (transistors or MOSFETs) arranged in an "H" shape that allows current to flow through a motor in either direction, enabling forward and reverse motion. It is the fundamental circuit for all DC motor control.</p>
+
+<h4>H-Bridge Operation</h4>
+<div class="diagram-container">
+<div class="diagram-title">H-Bridge Circuit — 4 Quadrant Operation</div>
+<svg viewBox="0 0 500 300" width="500" height="300">
+    <!-- Power rail -->
+    <line x1="100" y1="30" x2="400" y2="30" stroke="#ef4444" stroke-width="2"/>
+    <text x="50" y="35" fill="#ef4444" font-size="12">+V</text>
+    <!-- Ground rail -->
+    <line x1="100" y1="270" x2="400" y2="270" stroke="#9ca3af" stroke-width="2"/>
+    <text x="50" y="275" fill="#9ca3af" font-size="12">GND</text>
+    
+    <!-- Q1 (top left) -->
+    <rect x="120" y="50" width="50" height="40" rx="4" stroke="#10b981" stroke-width="2" fill="rgba(16,185,129,0.2)"/>
+    <text x="145" y="75" fill="#34d399" font-size="11" text-anchor="middle">Q1 ON</text>
+    
+    <!-- Q2 (bottom left) -->
+    <rect x="120" y="210" width="50" height="40" rx="4" stroke="#6b7280" stroke-width="1.5" fill="rgba(107,114,128,0.1)"/>
+    <text x="145" y="235" fill="#6b7280" font-size="11" text-anchor="middle">Q2 OFF</text>
+    
+    <!-- Q3 (top right) -->
+    <rect x="330" y="50" width="50" height="40" rx="4" stroke="#6b7280" stroke-width="1.5" fill="rgba(107,114,128,0.1)"/>
+    <text x="355" y="75" fill="#6b7280" font-size="11" text-anchor="middle">Q3 OFF</text>
+    
+    <!-- Q4 (bottom right) -->
+    <rect x="330" y="210" width="50" height="40" rx="4" stroke="#10b981" stroke-width="2" fill="rgba(16,185,129,0.2)"/>
+    <text x="355" y="235" fill="#34d399" font-size="11" text-anchor="middle">Q4 ON</text>
+    
+    <!-- Wires left side -->
+    <line x1="145" y1="30" x2="145" y2="50" stroke="#ef4444" stroke-width="1.5"/>
+    <line x1="145" y1="90" x2="145" y2="150" stroke="#60a5fa" stroke-width="2"/>
+    <line x1="145" y1="210" x2="145" y2="270" stroke="#9ca3af" stroke-width="1.5"/>
+    
+    <!-- Wires right side -->
+    <line x1="355" y1="30" x2="355" y2="50" stroke="#9ca3af" stroke-width="1.5"/>
+    <line x1="355" y1="90" x2="355" y2="150" stroke="#60a5fa" stroke-width="2"/>
+    <line x1="355" y1="210" x2="355" y2="270" stroke="#10b981" stroke-width="2"/>
+    
+    <!-- Motor (horizontal) -->
+    <rect x="180" y="130" width="140" height="40" rx="8" stroke="#f59e0b" stroke-width="2" fill="rgba(245,158,11,0.1)"/>
+    <text x="250" y="155" fill="#fbbf24" font-size="13" text-anchor="middle" font-weight="bold">MOTOR</text>
+    <line x1="145" y1="150" x2="180" y2="150" stroke="#60a5fa" stroke-width="2"/>
+    <line x1="320" y1="150" x2="355" y2="150" stroke="#60a5fa" stroke-width="2"/>
+    
+    <!-- Current flow arrow -->
+    <path d="M145,100 Q145,150 180,150" stroke="#f59e0b" stroke-width="1.5" fill="none" stroke-dasharray="4,2"/>
+    <path d="M320,150 Q355,150 355,200" stroke="#f59e0b" stroke-width="1.5" fill="none" stroke-dasharray="4,2"/>
+    <text x="250" y="110" fill="#fbbf24" font-size="11" text-anchor="middle">→ Forward (Q1+Q4 ON)</text>
+    
+    <!-- Dead time warning -->
+    <text x="250" y="290" fill="#ef4444" font-size="11" text-anchor="middle">⚠ Never turn Q1+Q2 or Q3+Q4 ON simultaneously (shoot-through!)</text>
+</svg>
+</div>
+
+<h4>H-Bridge ICs for Robotics</h4>
+<table class="data-table">
+<thead><tr><th>IC</th><th>Max Voltage</th><th>Max Current</th><th>Features</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td><strong>L298N</strong></td><td>46V</td><td>2A (4A peak)</td><td>Dual H-bridge, Enable pins</td><td>Classic, 5–7V voltage drop, inefficient (BJT-based). Use modern alternatives.</td></tr>
+<tr><td><strong>DRV8833</strong></td><td>10V</td><td>1.5A</td><td>Dual H-bridge, sleep mode</td><td>Small, efficient, good for small robots</td></tr>
+<tr><td><strong>DRV8874</strong></td><td>45V</td><td>10A</td><td>Current sensing, fault detection</td><td>Single full H-bridge, industrial grade</td></tr>
+<tr><td><strong>TB6612FNG</strong></td><td>15V</td><td>1.2A (3.2A peak)</td><td>Dual H-bridge, standby</td><td>Popular on Adafruit/Sparkfun boards. Better than L298N.</td></tr>
+<tr><td><strong>BTS7960</strong></td><td>28V</td><td>43A</td><td>Half-bridge pair, current sense</td><td>For heavy robots. Use 2× for full H-bridge.</td></tr>
+</tbody>
+</table>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">Arduino — L298N Dual H-Bridge</span><button class="code-copy">Copy</button></div>
+<pre><code>// L298N Module: IN1, IN2 = direction, ENA = PWM speed
+// Motor A:
+const int IN1 = 5, IN2 = 6, ENA = 9;   // Motor A
+const int IN3 = 7, IN4 = 8, ENB = 10;  // Motor B
+
+void setup() {
+    pinMode(IN1,OUTPUT); pinMode(IN2,OUTPUT); pinMode(ENA,OUTPUT);
+    pinMode(IN3,OUTPUT); pinMode(IN4,OUTPUT); pinMode(ENB,OUTPUT);
+}
+
+void drive(int speedA, int speedB) {
+    // speedA, speedB: -255 to +255
+    // Motor A
+    if (speedA >= 0) { digitalWrite(IN1,HIGH); digitalWrite(IN2,LOW); }
+    else             { digitalWrite(IN1,LOW);  digitalWrite(IN2,HIGH); }
+    analogWrite(ENA, abs(speedA));
+    
+    // Motor B
+    if (speedB >= 0) { digitalWrite(IN3,HIGH); digitalWrite(IN4,LOW); }
+    else             { digitalWrite(IN3,LOW);  digitalWrite(IN4,HIGH); }
+    analogWrite(ENB, abs(speedB));
+}
+
+void brake() {
+    // Active braking: both inputs HIGH
+    digitalWrite(IN1,HIGH); digitalWrite(IN2,HIGH);
+    digitalWrite(IN3,HIGH); digitalWrite(IN4,HIGH);
+}</code></pre>
+</div>
+`
+                },
+                {
+                    id: 'escs',
+                    title: 'ESCs for BLDC',
+                    content: `
+<h3>ESCs (Electronic Speed Controllers)</h3>
+<p>An ESC is a motor driver specifically designed for BLDC motors. It handles the complex 3-phase commutation (either 6-step trapezoidal or sinusoidal FOC), takes a simple speed command input (PWM or digital), and drives the motor accordingly.</p>
+
+<h4>ESC Types</h4>
+<div class="two-col">
+<div class="info-card">
+<h4>Drone ESC (BLHeli/KISS)</h4>
+<p>Designed for high-kV motors and propellers. Accept 50Hz PWM (1-2ms) or DSHOT (digital, bidirectional). BLHeli_32 supports bidirectional DSHOT, ESC telemetry (RPM, voltage, current), and 3D mode.</p>
+<p><strong>DSHOT advantages:</strong> No calibration needed, immune to noise, supports RPM feedback for RPM filtering.</p>
+</div>
+<div class="info-card">
+<h4>Ground Robot ESC</h4>
+<p>For car and robot chassis motors. Often bidirectional (forward/brake/reverse). Examples: VESC (open-source), Sabertooth 2×32, ODrive (CAN/USB, dual-axis). VESC and ODrive support full FOC control with encoder feedback.</p>
+</div>
+</div>
+
+<h4>VESC — The Open-Source BLDC Controller</h4>
+<p>VESC (Vedder ESC) is an open-source, highly configurable ESC for robotics. It supports:</p>
+<ul>
+<li>FOC (Field-Oriented Control) for smooth, efficient operation</li>
+<li>Multiple control modes: current, velocity, position</li>
+<li>CAN bus for multi-motor systems (up to 254 VESCs on one bus)</li>
+<li>Hardware: VESC 6+, Flipsky 75100 (100A, 75V), MakerBase DV6</li>
+<li>Software: VESC Tool (GUI), ROS integration, UART/USB/CAN API</li>
+</ul>
+`
+                },
+                {
+                    id: 'pwm-motor',
+                    title: 'PWM and Current Sensing',
+                    content: `
+<h3>PWM Motor Control and Current Sensing</h3>
+<h4>PWM Frequency for Motor Control</h4>
+<p>PWM (Pulse Width Modulation) controls average motor voltage by switching rapidly. Choosing the right frequency matters:</p>
+<table class="data-table">
+<thead><tr><th>Frequency</th><th>Effect</th><th>Use Case</th></tr></thead>
+<tbody>
+<tr><td>1–2 kHz</td><td>Audible whine, large ripple current</td><td>Avoid for most applications</td></tr>
+<tr><td>5–10 kHz</td><td>Marginal, some whine</td><td>Large motors with high inductance</td></tr>
+<tr><td>20–25 kHz</td><td>Inaudible, good current ripple</td><td>Standard for most DC and servo motors</td></tr>
+<tr><td>50–100 kHz</td><td>Very low ripple, fast response</td><td>High-performance servo drives</td></tr>
+</tbody>
+</table>
+
+<h4>Current Sensing</h4>
+<p>Closed-loop current control requires measuring motor current. Two approaches:</p>
+
+<div class="two-col">
+<div class="info-card">
+<h4>Shunt Resistor</h4>
+<p>Small resistor (1–100mΩ) in series with motor return path. Measure voltage across it with a differential amplifier (INA219, INA240). V = I × R_shunt. Very accurate, but the resistor dissipates power: P = I²×R.</p>
+</div>
+<div class="info-card">
+<h4>Hall Effect Current Sensor</h4>
+<p>ACS712/ACS723 or similar. Motor wire passes through chip; Hall sensor reads magnetic field. Non-invasive, no power loss, isolated. Less accurate (±1.5%) but simpler wiring.</p>
+</div>
+</div>
+
+<div class="code-block">
+<div class="code-header"><span class="code-lang">STM32 — Current-Controlled Motor (Simplified)</span><button class="code-copy">Copy</button></div>
+<pre><code>// Torque control via current control
+// Using shunt resistor + INA219 for current measurement
+
+#include "INA219.h"
+
+INA219 ina;
+float target_current = 1.0f;  // Amperes
+float kp = 50.0f;             // Current controller P gain
+
+void motorCurrentLoop() {
+    // Called at 5kHz from timer interrupt
+    float actual_current = ina.getCurrent_mA() / 1000.0f;
+    float error = target_current - actual_current;
+    float output = kp * error;  // P controller
+    
+    // Clamp to PWM range
+    output = constrain(output, -255, 255);
+    
+    // Apply to H-bridge
+    setMotorPWM((int)output);
+}</code></pre>
+</div>
+`
+                }
+            ]
+        },
+        // ========== 6.4 ADVANCED MOTOR CONTROL ==========
+        {
+            id: 'advanced-motor-control',
+            title: '6.4 Advanced Motor Control',
+            topics: [
+                {
+                    id: 'foc',
+                    title: 'FOC — Field Oriented Control',
+                    content: `
+<h3>FOC — Field-Oriented Control</h3>
+<p>Field-Oriented Control (FOC), also called Vector Control, is the gold standard for BLDC/PMSM motor control. Instead of controlling voltage directly, FOC decomposes motor current into two independent components: <strong>torque-producing (Iq)</strong> and <strong>flux-producing (Id)</strong>. By controlling Iq and Id separately, you achieve smooth, efficient, quiet operation at any speed — including zero RPM.</p>
+
+<h4>Why FOC?</h4>
+<div class="two-col">
+<div class="info-card warning">
+<h4>6-Step Trapezoidal (Basic BLDC)</h4>
+<p>Only 3 Hall sensor positions per 60° sector. Current waveform is trapezoidal. Torque ripple at each commutation step. Audible buzz. Works well for fans and drones but causes vibration in precision robots.</p>
+</div>
+<div class="info-card success">
+<h4>FOC (Sinusoidal)</h4>
+<p>Current waveform is sinusoidal. Zero torque ripple. Silent operation. Full torque at zero speed. Maximum efficiency at all operating points. Required for servo-quality robot joints.</p>
+</div>
+</div>
+
+<h4>FOC Algorithm — Step by Step</h4>
+<div class="flowchart">
+<div class="flow-node start">Measure Phase Currents (Ia, Ib, Ic)</div>
+<div class="flow-arrow"></div>
+<div class="flow-node process">Clark Transform: (Ia,Ib,Ic) → (Iα, Iβ) — 3-phase to 2-phase</div>
+<div class="flow-arrow"></div>
+<div class="flow-node process">Park Transform: (Iα,Iβ) + θ_rotor → (Id, Iq) — rotate to rotor frame</div>
+<div class="flow-arrow"></div>
+<div class="flow-node process">PI Controllers: Id_error→Vd, Iq_error→Vq</div>
+<div class="flow-arrow"></div>
+<div class="flow-node process">Inverse Park: (Vd,Vq) + θ_rotor → (Vα, Vβ)</div>
+<div class="flow-arrow"></div>
+<div class="flow-node process">SVPWM: (Vα,Vβ) → 3-phase PWM duty cycles</div>
+<div class="flow-arrow"></div>
+<div class="flow-node end">Drive 3-Phase Inverter</div>
+</div>
+
+<h4>Park and Clarke Transforms</h4>
+<div class="formula-block">
+<div class="formula-label">Clarke Transform (αβ)</div>
+<div class="formula">Iα = Ia &nbsp;&nbsp; Iβ = (Ia + 2Ib) / √3</div>
+</div>
+<div class="formula-block">
+<div class="formula-label">Park Transform (dq) — Angle θ = electrical angle</div>
+<div class="formula">Id = Iα·cos(θ) + Iβ·sin(θ)</div>
+<div class="formula">Iq = −Iα·sin(θ) + Iβ·cos(θ)</div>
+<div class="formula-description">Id = flux component (keep at 0 for max efficiency). Iq = torque component (proportional to output torque).</div>
+</div>
+
+<h4>FOC Implementation</h4>
+<p>FOC requires:</p>
+<ul>
+<li><strong>Current sensing</strong> on at least 2 phases (shunt resistors on low-side switches)</li>
+<li><strong>Rotor position</strong> — from encoder (optical/magnetic) or estimated via BEMF (sensorless)</li>
+<li><strong>High-speed computation</strong> — FOC loop typically runs at 10–40 kHz</li>
+<li><strong>FPU</strong> — Floating point hardware (Cortex-M4/M7) essential for real-time trig calculations</li>
+</ul>
+
+<p>Excellent open-source FOC libraries: <strong>SimpleFOC</strong> (Arduino/STM32, excellent documentation), <strong>VESC firmware</strong> (battle-tested, feature-complete), <strong>STM32 Motor Control SDK</strong> (professional, STM32-specific).</p>
+`
+                },
+                {
+                    id: 'svpwm',
+                    title: 'SVPWM',
+                    content: `
+<h3>SVPWM (Space Vector PWM)</h3>
+<p>SVPWM is the PWM modulation strategy used with FOC. Unlike sinusoidal PWM, it generates the desired voltage space vector more efficiently, achieving <strong>15% higher DC bus utilization</strong> and lower harmonic distortion.</p>
+
+<h4>Space Vector Concept</h4>
+<p>A 3-phase inverter has 8 possible switch states (6 active vectors + 2 zero vectors). SVPWM expresses the desired output voltage as a combination of two adjacent active vectors and one zero vector, minimizing switching losses.</p>
+
+<div class="formula-block">
+<div class="formula-label">SVPWM Maximum Voltage</div>
+<div class="formula">V_max(SVPWM) = V_dc / √3 ≈ 0.577 × V_dc</div>
+<div class="formula-description">vs. V_max(SPWM) = V_dc/2 = 0.5 × V_dc — SVPWM gives 15.5% more voltage from the same DC bus.</div>
+</div>
+`
+                }
+            ]
+        },
+        // ========== 6.5 TRANSMISSION SYSTEMS ==========
+        {
+            id: 'transmission-systems',
+            title: '6.5 Transmission Systems',
+            topics: [
+                {
+                    id: 'gearboxes',
+                    title: 'Gearboxes',
+                    content: `
+<h3>Gearboxes</h3>
+<p>Gearboxes trade speed for torque (or vice versa) between a motor and the load. Since most motors run best at high RPM with low torque, gearboxes are essential in robotics to match motor output to the required low-speed, high-torque needs of wheels, arms, and grippers.</p>
+
+<h4>Gearbox Fundamentals</h4>
+<div class="formula-block">
+<div class="formula-label">Gearbox Relationships</div>
+<div class="formula">T_out = T_in × N × η &nbsp;&nbsp; ω_out = ω_in / N</div>
+<div class="formula-description">N = gear ratio, η = efficiency (0.7–0.99 depending on type). Torque multiplies by N×η; speed divides by N.</div>
+</div>
+
+<h4>Gearbox Types</h4>
+<table class="data-table">
+<thead><tr><th>Type</th><th>Ratio Range</th><th>Efficiency</th><th>Backlash</th><th>Robotics Use</th></tr></thead>
+<tbody>
+<tr><td><strong>Spur Gear</strong></td><td>2:1 – 10:1 per stage</td><td>97–99%</td><td>Medium</td><td>Simple mechanisms, conveyers</td></tr>
+<tr><td><strong>Helical Gear</strong></td><td>2:1 – 10:1 per stage</td><td>96–99%</td><td>Low-Medium</td><td>Quieter than spur, higher load</td></tr>
+<tr><td><strong>Planetary</strong></td><td>3:1 – 100:1</td><td>94–98%</td><td>Medium</td><td>Compact, coaxial. Motors for wheels, arms. Most popular in robotics.</td></tr>
+<tr><td><strong>Worm Gear</strong></td><td>10:1 – 3000:1</td><td>30–90%</td><td>Low</td><td>Self-locking at high ratios. Lifts, pan-tilt heads.</td></tr>
+<tr><td><strong>Harmonic Drive</strong></td><td>30:1 – 320:1</td><td>65–90%</td><td>Near Zero</td><td>Robotic arm joints, highest precision.</td></tr>
+<tr><td><strong>Cycloidal</strong></td><td>6:1 – 87:1</td><td>85–95%</td><td>Near Zero</td><td>Humanoid legs, cobot joints. Shock resistant.</td></tr>
+</tbody>
+</table>
+
+<h4>Backlash</h4>
+<p>Backlash is the angular slack (dead zone) when reversing direction — caused by gaps between gear teeth. Even 0.1° of backlash causes significant positioning error at the end of a long robot arm. Harmonic and cycloidal drives achieve near-zero backlash, which is why they dominate high-precision robot joints.</p>
+`
+                },
+                {
+                    id: 'harmonic-drives',
+                    title: 'Harmonic Drives',
+                    content: `
+<h3>Harmonic Drives (Strain Wave Gearing)</h3>
+<p>The harmonic drive is the dominant joint actuator in precision robot arms, surgical robots, and space mechanisms. Invented by C. Walton Musser in 1955, it achieves extremely high gear ratios (30:1 to 320:1) in a compact, coaxial form with essentially zero backlash.</p>
+
+<h4>Components</h4>
+<div class="three-col">
+<div class="info-card">
+<h4>Wave Generator</h4>
+<p>Elliptical input shaft with a flexible bearing. Rotates at motor speed. Deforms the Flexspline.</p>
+</div>
+<div class="info-card">
+<h4>Flexspline</h4>
+<p>Thin-walled flexible steel cup with external teeth. Output shaft. Has 2 fewer teeth than Circular Spline.</p>
+</div>
+<div class="info-card">
+<h4>Circular Spline</h4>
+<p>Rigid internal ring gear. Fixed to housing. Has 2 more teeth than Flexspline.</p>
+</div>
+</div>
+
+<div class="formula-block">
+<div class="formula-label">Harmonic Drive Gear Ratio</div>
+<div class="formula">N = (N_CS - N_FS) / N_FS × (−1)</div>
+<div class="formula-description">N_CS = Circular Spline teeth, N_FS = Flexspline teeth. Typical: N_CS=202, N_FS=200 → Ratio = 100:1. The minus sign = output rotates opposite to input.</div>
+</div>
+
+<h4>Why Harmonic Drives in Robots?</h4>
+<ul>
+<li><strong>Zero backlash</strong> — Continuous tooth engagement means no dead zone. Precision positioning.</li>
+<li><strong>High torque density</strong> — Multiple teeth engage simultaneously (30% of all teeth at once).</li>
+<li><strong>Coaxial design</strong> — Input and output on same axis. Compact joint design.</li>
+<li><strong>High single-stage ratio</strong> — 100:1 in one stage vs 3–4 stages for conventional gears.</li>
+<li><strong>Used in:</strong> KUKA, FANUC, ABB robot arms; space manipulators (Canadarm); surgical robots (da Vinci).</li>
+</ul>
+
+<div class="info-card warning">
+<h4>⚠️ Harmonic Drive Limitations</h4>
+<p><strong>Not back-drivable:</strong> Cannot be easily driven backwards from the output (good for safety, bad for haptics).</p>
+<p><strong>Low shock resistance:</strong> The flexible spline can crack under sudden impact loads.</p>
+<p><strong>Cost:</strong> A single harmonic drive unit costs $300–$2000+.</p>
+<p><strong>Efficiency drops at low speeds:</strong> 65–70% at low RPM due to flexspline hysteresis.</p>
+</div>
+`
+                },
+                {
+                    id: 'cycloidal-drives',
+                    title: 'Cycloidal Drives',
+                    content: `
+<h3>Cycloidal Drives</h3>
+<p>A cycloidal drive achieves high reduction ratios through the epicyclic (cycloidal) motion of an eccentric disc. It's the preferred transmission in cobots (collaborative robots) and humanoid legs because it handles shock loads far better than harmonic drives while maintaining near-zero backlash.</p>
+
+<h4>Working Principle</h4>
+<p>An eccentric input shaft causes a cycloidal disc to orbit (not spin) inside a ring of cylindrical pins. The disc has one fewer lobe than pins. As the disc orbits, it rotates slowly — the gear ratio equals the number of lobes on the cycloidal disc. Pins on the output plate engage slots in the disc to extract this rotation.</p>
+
+<div class="formula-block">
+<div class="formula-label">Cycloidal Drive Ratio</div>
+<div class="formula">N = Number of cycloidal disc lobes</div>
+<div class="formula-description">E.g., 17-lobe disc inside 18-pin ring → 17:1 ratio. Multiple discs (180° offset) cancel vibration.</div>
+</div>
+
+<h4>Cycloidal vs Harmonic</h4>
+<table class="data-table">
+<thead><tr><th>Feature</th><th>Harmonic Drive</th><th>Cycloidal Drive</th></tr></thead>
+<tbody>
+<tr><td>Backlash</td><td>~Zero (arc-minutes)</td><td>Very Low (1–3 arc-min)</td></tr>
+<tr><td>Shock load</td><td>Low (flex spline breaks)</td><td>High (rigid components)</td></tr>
+<tr><td>Efficiency</td><td>65–90%</td><td>85–95%</td></tr>
+<tr><td>Back-drivability</td><td>No</td><td>Moderate</td></tr>
+<tr><td>Cost</td><td>High</td><td>Medium-High</td></tr>
+<tr><td>Best for</td><td>Precision arms, space</td><td>Cobots, humanoid legs</td></tr>
+</tbody>
+</table>
+`
+                },
+                {
+                    id: 'ball-screws',
+                    title: 'Ball Screws & Belts',
+                    content: `
+<h3>Ball Screws and Belt Drives</h3>
+<h4>Ball Screws</h4>
+<p>A ball screw converts rotational motion to precise linear motion using recirculating ball bearings between the screw shaft and nut. Far superior to lead screws in efficiency and precision — used in CNC machines, linear robot axes, and precision linear actuators.</p>
+
+<table class="data-table">
+<thead><tr><th>Feature</th><th>Lead Screw</th><th>Ball Screw</th></tr></thead>
+<tbody>
+<tr><td>Efficiency</td><td>20–40%</td><td>90–98%</td></tr>
+<tr><td>Backlash</td><td>High (unless preloaded)</td><td>Near-zero (preloaded)</td></tr>
+<tr><td>Self-locking</td><td>Yes (at low lead angle)</td><td>No (can back-drive)</td></tr>
+<tr><td>Speed</td><td>Low (sliding friction)</td><td>High (rolling friction)</td></tr>
+<tr><td>Cost</td><td>Low</td><td>High</td></tr>
+</tbody>
+</table>
+
+<div class="formula-block">
+<div class="formula-label">Ball Screw — Linear Force</div>
+<div class="formula">F = (2π × T_motor × η) / Lead</div>
+<div class="formula-description">Lead = linear travel per revolution (mm). Example: 5mm lead, T_motor=1Nm, η=0.95 → F = (2π × 1 × 0.95)/0.005 = 1194N</div>
+</div>
+
+<h4>Belt and Pulley Drives</h4>
+<p>Timing belts (GT2, HTD) with toothed pulleys are used extensively in 3D printers, CNC routers, and robot arms for long-travel linear motion. They are lightweight, cheap, and backlash-free (with proper tensioning), but stretch under high loads.</p>
+
+<ul>
+<li><strong>GT2 belt (2mm pitch)</strong> — Standard in 3D printers. 20T pulley: 40mm/rev. Lightweight, good for 20–50N loads.</li>
+<li><strong>GT3 belt (3mm pitch)</strong> — Heavier duty. Better for faster, higher-force applications.</li>
+<li><strong>Chain drive</strong> — Very high force capacity, tolerates misalignment. Used in heavy robot platforms and conveyor systems.</li>
+</ul>
+`
+                }
+            ]
+        }
+    ]
+};

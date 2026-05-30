@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Robotics Academy — Complete Engineering Curriculum</title>
+    <meta name="description" content="Comprehensive robotics engineering curriculum covering Electrical Engineering, Embedded Systems, Sensors, and Actuators from beginner to advanced level.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Top Navigation Bar -->
+    <header class="top-nav">
+        <div class="nav-brand">
+            <div class="brand-icon">
+                <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="20" cy="20" r="18" stroke="url(#brandGrad)" stroke-width="2.5" fill="none"/>
+                    <path d="M14 14L20 8L26 14" stroke="url(#brandGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M20 8V26" stroke="url(#brandGrad)" stroke-width="2" stroke-linecap="round"/>
+                    <circle cx="14" cy="28" r="3" fill="url(#brandGrad)"/>
+                    <circle cx="26" cy="28" r="3" fill="url(#brandGrad)"/>
+                    <circle cx="20" cy="20" r="2" fill="url(#brandGrad)"/>
+                    <defs>
+                        <linearGradient id="brandGrad" x1="0" y1="0" x2="40" y2="40">
+                            <stop offset="0%" stop-color="#6C63FF"/>
+                            <stop offset="100%" stop-color="#00D9FF"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+            <div class="brand-text">
+                <span class="brand-name">Robotics Academy</span>
+                <span class="brand-tagline">Complete Engineering Curriculum</span>
+            </div>
+        </div>
+        <nav class="nav-phases">
+            <button class="phase-tab active" data-phase="3">
+                <span class="tab-icon">⚡</span>
+                <span class="tab-label">Phase 3</span>
+                <span class="tab-name">Electrical</span>
+            </button>
+            <button class="phase-tab" data-phase="4">
+                <span class="tab-icon">🔧</span>
+                <span class="tab-label">Phase 4</span>
+                <span class="tab-name">Embedded</span>
+            </button>
+            <button class="phase-tab" data-phase="5">
+                <span class="tab-icon">📡</span>
+                <span class="tab-label">Phase 5</span>
+                <span class="tab-name">Sensors</span>
+            </button>
+            <button class="phase-tab" data-phase="6">
+                <span class="tab-icon">⚙️</span>
+                <span class="tab-label">Phase 6</span>
+                <span class="tab-name">Actuators</span>
+            </button>
+        </nav>
+        <div class="nav-progress">
+            <div class="progress-ring">
+                <svg viewBox="0 0 36 36">
+                    <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="3"/>
+                    <path id="progressPath" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="url(#progGrad)" stroke-width="3" stroke-dasharray="0, 100" stroke-linecap="round"/>
+                    <defs>
+                        <linearGradient id="progGrad" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0%" stop-color="#6C63FF"/>
+                            <stop offset="100%" stop-color="#00D9FF"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <span class="progress-text" id="progressText">0%</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h3 class="sidebar-title" id="sidebarTitle">Phase 3: Electrical Engineering</h3>
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M4 6H16M4 10H16M4 14H16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="sidebar-search">
+                <input type="text" id="sidebarSearch" placeholder="Search topics..." autocomplete="off">
+                <svg class="search-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M11 11L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <nav class="sidebar-nav" id="sidebarNav">
+                <!-- Populated by JavaScript -->
+            </nav>
+        </aside>
+
+        <!-- Content Area -->
+        <main class="content-area" id="contentArea">
+            <!-- Content loaded dynamically -->
+            <div class="content-loader" id="contentLoader">
+                <div class="loader-animation">
+                    <div class="loader-ring"></div>
+                    <div class="loader-ring"></div>
+                    <div class="loader-ring"></div>
+                </div>
+                <p>Loading content...</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- Back to top button -->
+    <button class="back-to-top" id="backToTop" title="Back to top">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M10 16V4M10 4L4 10M10 4L16 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </button>
+
+    <!-- Scripts -->
+    <script src="js/phase3.js"></script>
+    <script src="js/phase4.js"></script>
+    <script src="js/phase5.js"></script>
+    <script src="js/phase6.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
